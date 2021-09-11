@@ -1,0 +1,56 @@
+#! /usr/bin/env python3
+
+# private api key python file
+# set variable:
+# API_KEY="YOUR_API_KEY"
+import KEY 
+
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import json
+
+#############################################################
+# URLS
+
+# API usage and call history for account
+# https://pro.coinmarketcap.com/account/
+
+# API documentation
+# https://coinmarketcap.com/api/documentation/v1/
+#############################################################
+
+url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+parameters = {
+        'symbol':'ETH,BTC',
+        'convert':'USD'
+}
+headers = {
+    'Accepts': 'application/json',
+    'X-CMC_PRO_API_KEY': KEY.API_KEY,
+}
+
+def full(data):
+    print(json.dumps(data, sort_keys=True, indent=4))
+
+# output the price in readable format
+# @param data - full json object
+# @param symbol - symbol for crypto ex: "ETH" 
+def out(data, symbol):
+    price = float(data["data"][symbol]["quote"]["USD"]["price"])
+    print(symbol + " : %.2f$" %(price))
+
+def main():
+    
+    session = Session()
+    session.headers.update(headers)
+
+    try:
+        response = session.get(url, params=parameters)
+        data = json.loads(response.text)
+        out(data, "ETH")
+        out(data, "BTC")
+    except (ConnectionError, Timeout, TooManyRedirects) as e:
+        print(e)
+
+if __name__ == "__main__":
+    main()
