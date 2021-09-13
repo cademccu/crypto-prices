@@ -37,9 +37,12 @@ def full(data):
 # output the price in readable format
 # @param data - full json object
 # @param symbol - symbol for crypto ex: "ETH" 
+# @param convert_fraction - your
 def out(data, symbol):
     price = float(data["data"][symbol]["quote"]["USD"]["price"])
     print(symbol + " : %.2f$" %(price))
+    if symbol in KEY.CONVERT:
+        print("\t[OWNED] " + symbol + " : %.2f$" %(price * KEY.CONVERT[symbol]))
 
 def main():
     
